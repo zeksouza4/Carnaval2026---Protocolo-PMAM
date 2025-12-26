@@ -368,11 +368,11 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Protocolo</th>
-                            <th>Data</th>
+                            <th>Data do Protocolo</th>
+                            <th>Data do Evento</th>
                             <th>Evento</th>
-                            <th>Local</th>
-                            <th>Status</th>
+                            <th>Endereço</th>
+                            <th>Apoio</th>
                         </tr>
                     </thead>
                     <tbody id="tbody"></tbody>
@@ -446,8 +446,8 @@
 
             db.forEach((r, i) => {
                 const statusStr = (r[10] || "").toUpperCase();
-                if (statusStr.includes("GOVERNO")) counts.gover++;
-                if (statusStr.includes("PREFEITURA")) counts.prefei++;
+                if (statusStr.includes("APOIO GOVERNO")) counts.gover++;
+                if (statusStr.includes("APOIO PREFEITURA")) counts.prefei++;
                 if (statusStr.includes("PARTICULAR")) counts.parti++;
 
                 const isOk = statusStr.includes('OK') || statusStr.includes('CONFIRMADO');
