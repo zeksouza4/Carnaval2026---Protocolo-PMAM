@@ -192,7 +192,7 @@
         }
 
         .table-responsive { overflow-x: auto; width: 100%; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        <table> { width: 100%; border-collapse: collapse; min-width: 600px; }
         th { 
             text-align: left; 
             padding: 20px 30px; 
@@ -400,7 +400,6 @@
     </div>
 
     <script>
-        // O CÓDIGO JAVASCRIPT PERMANECE EXATAMENTE O MESMO
         const CONFIG = {
             CSV: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSCwtXoSdAx3GqxDCCA9oWn4z4shTDz0FZbEI579BiQj1JiLhM0q24qiRb0yu_dHa7tblthkZNyDmrC/pub?gid=1759437894&single=true&output=csv",
             USER: "carnaval",
@@ -520,7 +519,11 @@
             const startDate = startStr ? new Date(startStr + "T00:00:00") : null;
             const endDate = endStr ? new Date(endStr + "T23:59:59") : null;
 
-            document.querySelectorAll('#tbody tr').forEach(tr => {
+            // Novas variáveis para contagem filtrada
+            let visibleCount = 0;
+            let counts = { gover: 0, prefei: 0, parti: 0 };
+
+            document.querySelectorAll('#tbody tr').forEach((tr, index) => {
                 const rowText = tr.innerText.toLowerCase();
                 const dateText = tr.getAttribute('data-event-date');
                 const [day, month, year] = dateText.split('/');
@@ -532,8 +535,25 @@
                 if (startDate && eventDate < startDate) matchDate = false;
                 if (endDate && eventDate > endDate) matchDate = false;
 
-                tr.style.display = (matchText && matchDate) ? '' : 'none';
+                if (matchText && matchDate) {
+                    tr.style.display = '';
+                    visibleCount++;
+                    
+                    // Incrementa contadores baseados no status do item no banco de dados original (db)
+                    const statusStr = (db[index][10] || "").toUpperCase();
+                    if (statusStr.includes("APOIO GOVERNO")) counts.gover++;
+                    if (statusStr.includes("APOIO PREFEITURA")) counts.prefei++;
+                    if (statusStr.includes("PARTICULAR")) counts.parti++;
+                } else {
+                    tr.style.display = 'none';
+                }
             });
+
+            // Atualiza os painéis de KPI com os novos valores
+            document.getElementById('k-total').innerText = visibleCount;
+            document.getElementById('k-gover').innerText = counts.gover;
+            document.getElementById('k-prefei').innerText = counts.prefei;
+            document.getElementById('k-parti').innerText = counts.parti;
         }
     </script>
 </body>
